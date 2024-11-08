@@ -9,41 +9,41 @@ public class Player : MonoBehaviour
     public float jumpForce = 8f;
     //Awake la ham tu dong duoc goi khi initial script nay trong unity
     private void Awake()
-        {
-            character = GetComponent<CharacterController>();
-        }
+    {
+        character = GetComponent<CharacterController>();
+    }
     private void OnEnable()
-        {
-            direction = Vector3.zero;
-        }
+    {
+        direction = Vector3.zero;
+    }
     private void Update()
+    {
+        direction = direction + Vector3.down * gravity * Time.deltaTime;
+        if (character.isGrounded == true)
         {
-            direction = direction + Vector3.down * gravity * Time.deltaTime;
-            if (character.isGrounded == true) 
+            direction = Vector3.down;
+            if (Input.GetButton("Jump"))
             {
-                direction = Vector3.down;
-                if (Input.GetButton("Jump"))
-                    {
-                        direction = Vector3.up * jumpForce;
-                    }
-            }   
-            character.Move(direction * Time.deltaTime);
+                direction = Vector3.up * jumpForce;
+            }
         }
+        character.Move(direction * Time.deltaTime);
+    }
     private void OnTriggerEnter(Collider character)
+    {
+        if (character.CompareTag("Obstacle"))
         {
-            if (character.CompareTag("Obstacle"))
-                {
-                    HealthManager.health--;
-                    if(HealthManager.health <=0) 
-                    {
-                        GameManager.Instance.GameOver(); 
-                    }
-                    else
-                    {
-                        StartCoroutine(GetHurt());
-                    }
-                }
+            HealthManager.health--;
+            if (HealthManager.health <= 0)
+            {
+                GameManager.Instance.GameOver();
+            }
+            else
+            {
+                StartCoroutine(GetHurt());
+            }
         }
+    }
     IEnumerator GetHurt()
     {
         Physics2D.IgnoreLayerCollision(6, 8);

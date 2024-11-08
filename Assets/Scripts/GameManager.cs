@@ -18,63 +18,64 @@ public class GameManager : MonoBehaviour
     public GameOverScreen GameOverScreen;
 
 
-    public float gameSpeed { get; private set; } 
+    public float gameSpeed { get; private set; }
     public float initialGameSpeed = 5f;
     public float gameSpeedChange = 0.1f;
     private void Awake()
-        {
-            if (Instance == null) Instance = this;
-            else DestroyImmediate(gameObject);
-        }
-    private void OnDestroy()
-        {
-            if (Instance == this) Instance = null;
-        }
-    private void Start()
-        {
-            player = FindObjectOfType<Player>();
-            spawner = FindObjectOfType<Spawner>();
-            NewGame();
-        }
-  
-        private void NewGame()
-        {
-            // Obstacle[] obstacles = FindObjectOfType
-            gameSpeed = initialGameSpeed;
-            enabled = true;
-            player.gameObject.SetActive(true);
-            spawner.gameObject.SetActive(true);
-            UpdateHiScore();
-        }
-        public void GameOver()
-        {
-            HealthManager.health = 0;
-            GameOverScreen.Setup(score);
-            gameSpeed = 0f;
-            enabled = false;
-            player.gameObject.SetActive(false);
-            spawner.gameObject.SetActive(false);
-            UpdateHiScore();
-           
-    }
-        private void Update()
     {
-            gameSpeed = gameSpeed + gameSpeedChange * Time.deltaTime;
-            score += gameSpeed * Time.deltaTime;
-            scoreText.text = Mathf.FloorToInt(score).ToString("D5");
-            //Floor de lam tron xuong, D5 de luon hien 5 chu so
-        }
+        if (Instance == null) Instance = this;
+        else DestroyImmediate(gameObject);
+    }
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+    private void Start()
+    {
+        player = FindObjectOfType<Player>();
+        spawner = FindObjectOfType<Spawner>();
+        NewGame();
+    }
 
-        private void UpdateHiScore()
+    private void NewGame()
+    {
+        // Obstacle[] obstacles = FindObjectOfType
+        gameSpeed = initialGameSpeed;
+        enabled = true;
+        player.gameObject.SetActive(true);
+        spawner.gameObject.SetActive(true);
+        UpdateHiScore();
+    }
+    public void GameOver()
+    {
+        HealthManager.health = 0;
+        HealthManager.Instance.SetAllHeartsEmpty();
+        gameSpeed = 0f;
+        enabled = false;
+        player.gameObject.SetActive(false);
+        spawner.gameObject.SetActive(false);
+        UpdateHiScore();
+        GameOverScreen.Setup(score);
+
+    }
+    private void Update()
+    {
+        gameSpeed = gameSpeed + gameSpeedChange * Time.deltaTime;
+        score += gameSpeed * Time.deltaTime;
+        scoreText.text = Mathf.FloorToInt(score).ToString("D5");
+        //Floor de lam tron xuong, D5 de luon hien 5 chu so
+    }
+
+    private void UpdateHiScore()
+    {
+        float hiscore = PlayerPrefs.GetFloat("hiscore", 0);
+
+        if (score > hiscore)
         {
-            float hiscore = PlayerPrefs.GetFloat("hiscore", 0);
-
-            if (score > hiscore)
-            {
             hiscore = score;
             PlayerPrefs.SetFloat("hiscore", hiscore);
-            }
+        }
 
-            hiscoreText.text = Mathf.FloorToInt(hiscore).ToString("D5");
-   }
+        hiscoreText.text = Mathf.FloorToInt(hiscore).ToString("D5");
+    }
 }
