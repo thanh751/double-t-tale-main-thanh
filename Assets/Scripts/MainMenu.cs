@@ -5,13 +5,30 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+    public void StartGame()
+    {
+        audioManager.PlaySFX(audioManager.start);
+        SceneManager.LoadScene("CharacterSelection");
+    }
     public void PlayGame()
     {
-        SceneManager.LoadSceneAsync("SampleScene");
-        /*Trong ngoac se la canh tiep theo sau khi nhan nut play*/
+        audioManager.PlaySFX(audioManager.start);
+        SceneManager.LoadScene("Double-T-Tale");
     }
-    public void QuitGame()
+    public void Home()
     {
+        audioManager.PlaySFX(audioManager.home);
+        SceneManager.LoadScene("MainMenu");
+    }
+    public void Exit()
+    {
+        audioManager.PlaySFX(audioManager.exit);
         Application.Quit();
     }
+    
 }

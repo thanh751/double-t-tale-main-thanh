@@ -5,55 +5,43 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject PauseBackground;
-    public static bool isPause=false;
-
-    void Update()
+    [SerializeField] GameObject pauseMenuUI;
+    AudioManager audioManager;
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if(isPause)
-            {
-                ResumeGame();
-            }
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+    private bool isPaused = false; 
+    void Update()
+    { 
+        if (Input.GetKeyDown(KeyCode.Escape)) 
+        { 
+            if (isPaused)Resume();
             else
             {
-                PauseGame();
+                Pause();
             }
-        }
-
+        } 
+    } 
+    public void Resume() 
+    { 
+        audioManager.PlaySFX(audioManager.click);
+        pauseMenuUI.SetActive(false); 
+        Time.timeScale = 1f; 
+        isPaused = false; 
+    } 
+    void Pause() 
+    { 
+        audioManager.PlaySFX(audioManager.click);
+        pauseMenuUI.SetActive(true); 
+        Time.timeScale = 0f; 
+        isPaused = true; 
     }
-    public void PauseGame()
+    public void Home()
     {
-        PauseBackground.SetActive(true);
-        Time.timeScale = 0f;
-        //Lam cho thoi gian va cac canh dung lai 
-        isPause = true;
-    }
-    public void ResumeGame()
-    {
-        PauseBackground.SetActive(false);
+        audioManager.PlaySFX(audioManager.home);
         Time.timeScale = 1f;
-        //Thoi gian va canh tiep tuc chay 
-        isPause = false;
-    }
-    public void Volume(bool muted)
-    {
-        if (muted)
-        {
-            AudioListener.volume = 0f;
-        }
-        else
-        {
-            AudioListener.volume = 1f;
-        }
-    }
-    public void BackMainMenu()
-    {
-        SceneManager.LoadSceneAsync("Main Menu");
-    }
-    public void ExitGame()
-    {
-        Application.Quit();
+        isPaused = false;
+        SceneManager.LoadScene("MainMenu");
     }
 }
